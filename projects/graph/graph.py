@@ -133,16 +133,15 @@ class Graph:
 
         This should be done using recursion.
         """
-        # Will be passing in list after first time
-        if path is None:
+        if path is None:  # No path the first function call
             path = [start]
-        # Base case: vertex is the destination
-        if path[-1] == dst:  # If last node in path is dst
-            return path
-        if path[-1] not in visited:
-            visited.add(path[-1])
-        else:
+        # Base case (ultimate): vertex is the destination
+        if path[-1] == dst:  # If last node in path is dst, then...
+            return path  # Return the path — goes back down call stack
+        # Base case (intermediate): if visited, return None
+        if path[-1] in visited:
             return None
+        visited.add(path[-1])  # If not visited or dst, add to visited
         # Recursive case: call self on neighbors
         for ngbr in self.get_neighbors(path[-1]):
             if ngbr not in visited:  # Check if neighbor has been visited
