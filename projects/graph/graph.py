@@ -31,80 +31,78 @@ class Graph:
         else:
             return None
 
-    def bft(self, start_vertex):
+    def bft(self, starting_vertex):
         """Print each vertex in breadth-first order
-        beginning from start_vertex.
+        beginning from starting_vertex.
         """
         # Create a q and n q starting vertex
         qq = Queue()
-        qq.enqueue([start_vertex])
+        qq.enqueue([starting_vertex])
         # Create set of traversed vertices
         visited = set()
-        # While queue is not empty
-        while qq.size() > 0:
-            # Dequeue first vertex
-            path = qq.dequeue()
-            # If not in traversed
+        while qq.size() > 0:  # While queue is not empty
+            path = qq.dequeue()  # Dequeue first vertex
             if path[-1] not in visited:
-                # DO THE THANG
-                print(path[-1])
-                # Mark as visited
-                visited.add(path[-1])
+                print(path[-1])  # DO THE THANG
+                visited.add(path[-1])  # Mark as visited
                 # Enqueue all neighbors
                 for ngbr in self.get_neighbors(path[-1]):
                     new_path = path + [ngbr]
                     qq.enqueue(new_path)
 
-    def dft(self, start_vertex):
+    def dft(self, starting_vertex):
         """Print each vertex in depth-first order
-        beginning from start_vertex.
+        beginning from starting_vertex.
         """
         # Create stack and push starting vertex
         stack = Stack()
-        stack.push([start_vertex])
+        stack.push([starting_vertex])
         # Create set of traversed vertices
         visited = set()
-        # While stack is not empty
         while stack.size() > 0:
-            # Pop first vertex
-            path = stack.pop()
+            path = stack.pop()  # Pop first vertex
             # If not in traversed
             if path[-1] not in visited:
-                # DO THE THANG
-                print(path[-1])
-                # Mark as visited
-                visited.add(path[-1])
+                print(path[-1])  # DO THE THANG
+                visited.add(path[-1])  # Mark as visited
                 # Push all neighbors
                 for ngbr in self.get_neighbors(path[-1]):
                     new_path = path + [ngbr]
                     stack.push(new_path)
 
-    def dft_recursive(self, start_vertex):
+    def dft_recursive(self, starting_vertex, visited=None):
         """Print each vertex in depth-first order
-        beginning from start_vertex.
+        beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        pass  # TODO
+        # Initialize visited set, keep compatibility with tests
+        if visited is None:
+            visited = set()
+        # Base case: vertex has been visited
+        if starting_vertex in visited:
+            return
+        visited.add(starting_vertex)
+        print(starting_vertex)
+        # Recursive case: call self on neighbors
+        for ngbr in self.get_neighbors(starting_vertex):
+            self.dft_recursive(ngbr, visited)
 
-    def bfs(self, start_vertex, dst_vertex):
+    def bfs(self, starting_vertex, dst_vertex):
         """Return a list containing the shortest path from
-        start_vertex to dst_vertex in
-        breath-first order.
+        starting_vertex to dst_vertex in breath-first order.
         """
         pass  # TODO
 
-    def dfs(self, start_vertex, dst_vertex):
+    def dfs(self, starting_vertex, dst_vertex):
         """Return a list containing a path from
-        start_vertex to dst_vertex in
-        depth-first order.
+        starting_vertex to dst_vertex in depth-first order.
         """
         pass  # TODO
 
-    def dfs_recursive(self, start_vertex, dst_vertex):
+    def dfs_recursive(self, starting_vertex, dst_vertex):
         """Return a list containing a path from
-        start_vertex to dst_vertex in
-        depth-first order.
+        starting_vertex to dst_vertex in depth-first order.
 
         This should be done using recursion.
         """
