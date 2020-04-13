@@ -70,15 +70,12 @@ class Graph:
                     new_path = path + [ngbr]
                     stack.push(new_path)
 
-    def dft_recursive(self, starting_vertex, visited=None):
+    def dft_recursive(self, starting_vertex, visited=set()):
         """Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        # Initialize visited set, keep compatibility with tests
-        if visited is None:
-            visited = set()
         # Base case: vertex has been visited
         if starting_vertex in visited:
             return
@@ -92,21 +89,67 @@ class Graph:
         """Return a list containing the shortest path from
         starting_vertex to dst_vertex in breath-first order.
         """
-        pass  # TODO
+        # Create a q and n q starting vertex
+        qq = Queue()
+        qq.enqueue([starting_vertex])
+        # Create set of traversed vertices
+        visited = set()
+        while qq.size() > 0:  # While queue is not empty
+            path = qq.dequeue()  # Dequeue first vertex
+            if path[-1] == dst_vertex:  # If last node in path is dest
+                # Return full path and stop function execution
+                return path
+            elif path[-1] not in visited:
+                visited.add(path[-1])  # Mark as visited
+                # Enqueue all neighbors
+                for ngbr in self.get_neighbors(path[-1]):
+                    new_path = path + [ngbr]
+                    qq.enqueue(new_path)
 
     def dfs(self, starting_vertex, dst_vertex):
         """Return a list containing a path from
         starting_vertex to dst_vertex in depth-first order.
         """
-        pass  # TODO
+        # Create stack and push starting vertex
+        stack = Stack()
+        stack.push([starting_vertex])
+        # Create set of traversed vertices
+        visited = set()
+        while stack.size() > 0:
+            path = stack.pop()  # Pop first vertex
+            if path[-1] == dst_vertex:  # If last node in path is dest
+                # Return full path and stop function execution
+                return path
+            if path[-1] not in visited:
+                visited.add(path[-1])  # Mark as visited
+                # Push all neighbors
+                for ngbr in self.get_neighbors(path[-1]):
+                    new_path = path + [ngbr]
+                    stack.push(new_path)
 
-    def dfs_recursive(self, starting_vertex, dst_vertex):
+    def dfs_recursive(self, start, dst, path=None, visited=set()):
         """Return a list containing a path from
-        starting_vertex to dst_vertex in depth-first order.
+        path to destination vertex in depth-first order.
 
         This should be done using recursion.
         """
-        pass  # TODO
+        # Will be passing in list after first time
+        if path is None:
+            path = [start]
+        # Base case: vertex is the destination
+        if path[-1] == dst:  # If last node in path is dst
+            return path
+        if path[-1] not in visited:
+            visited.add(path[-1])
+        else:
+            return None
+        # Recursive case: call self on neighbors
+        for ngbr in self.get_neighbors(path[-1]):
+            if ngbr not in visited:  # Check if neighbor has been visited
+                result = self.dfs_recursive(ngbr, dst, path + [ngbr], visited)
+                # If the result contains the path variable, return it
+                if result is not None:
+                    return result
 
 
 if __name__ == "__main__":
