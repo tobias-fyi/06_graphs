@@ -10,30 +10,24 @@ from graph import Graph
 
 
 def earliest_ancestor(ancestors, starting_node):
-    # Instantiate graph
+    # === Instantiate graph === #
     graph = Graph()
-
-    # Loop through input to add all vertices
-    for rel in ancestors:  # Each element is (parent, child)
-        parent = rel[0]
-        child = rel[1]
-
-        # Check for vertices in graph, adding if needed
+    for rel in ancestors:  # Loop through input to add all vertices
+        # === Unpack tuple for readability: (parent, child) === #
+        parent, child = rel
+        # === Check for vertices, adding if needed === #
         if parent not in graph.vertices:  # Check if parent exists
-            # If parent doesn't exist, add it
-            graph.add_vertex(parent)
-
+            graph.add_vertex(parent)  # If not, add it
         if child not in graph.vertices:  # Check if child exists
-            # If child doesn't exist, add it
-            graph.add_vertex(child)
-
-        # Add the edge between child -> parent
+            graph.add_vertex(child)  # If not, add it
+        # === Add the edge between child -> parent === #
         # This relation b/c direction of search is child -> parent
         graph.add_edge(child, parent)
-
+    # ===
     if len(graph.vertices[starting_node]) < 1:
-        return -1
+        return -1  # If vertex has no parent, return -1
     else:
+        # Otherwise, bft returns the furthest connected node from start
         return graph.bft(starting_node)
 
 
