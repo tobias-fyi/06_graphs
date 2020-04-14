@@ -2,6 +2,10 @@
 Simple graph implementation
 """
 
+import os
+import sys
+
+sys.path.append(os.path.abspath("../graph"))
 from util import Stack, Queue  # These may come in handy
 
 
@@ -42,12 +46,13 @@ class Graph:
         while qq.size() > 0:  # While queue is not empty
             path = qq.dequeue()  # Dequeue first vertex
             if path[-1] not in visited:
-                print(path[-1])  # DO THE THANG
+                # print(path[-1])  # DO THE THANG
                 visited.add(path[-1])  # Mark as visited
                 # Enqueue all neighbors
                 for ngbr in self.get_neighbors(path[-1]):
                     new_path = path + [ngbr]
                     qq.enqueue(new_path)
+        return path[-1]
 
     def dft(self, starting_vertex):
         """Print each vertex in depth-first order
