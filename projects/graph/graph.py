@@ -70,12 +70,14 @@ class Graph:
                     new_path = path + [ngbr]
                     stack.push(new_path)
 
-    def dft_recursive(self, starting_vertex, visited=set()):
+    def dft_recursive(self, starting_vertex, visited=None):
         """Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
+        if visited is None:
+            visited = set()
         # Base case: vertex has been visited
         if starting_vertex in visited:
             return
@@ -127,12 +129,14 @@ class Graph:
                     new_path = path + [ngbr]
                     stack.push(new_path)
 
-    def dfs_recursive(self, start, dst, path=None, visited=set()):
+    def dfs_recursive(self, start, dst, path=None, visited=None):
         """Return a list containing a path from
         path to destination vertex in depth-first order.
 
         This should be done using recursion.
         """
+        if visited is None:
+            visited = set()
         if path is None:  # No path the first function call
             path = [start]
         # Base case (ultimate): vertex is the destination
