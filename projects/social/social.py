@@ -2,9 +2,16 @@
 Graphs :: Day 3 - Social network graph
 """
 
+# %%
+import os
 import random
+import sys
+
+sys.path.append(os.path.abspath("../graph"))
+from util import Stack, Queue
 
 
+# %%
 class User:
     def __init__(self, name):
         self.name = name
@@ -30,17 +37,15 @@ class SocialGraph:
             self.friendships[friend_id].add(user_id)
 
     def add_user(self, name):
-        """Create a new user with a sequential integer ID"""
+        """Create a new user with a sequential integer ID."""
         self.last_id += 1  # automatically increment the ID to assign the new user
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
     def populate_graph(self, num_users, avg_friendships):
         """Takes a number of users and an average number of friendships
-        as arguments.
-
-        Creates that number of users and a randomly distributed friendships
-        between those users.
+        as arguments. Creates that number of users and a randomly
+        distributed friendships between those users.
 
         The number of users must be greater than the average number of friendships.
         """
@@ -48,10 +53,9 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # === Add users === #
-        # User add_user num_user times
+        # Use add_user num_user times
         for i in range(num_users):
             self.add_user(f"user_{i}")
 
@@ -70,25 +74,37 @@ class SocialGraph:
         # Create for first X pairs - X is total // 2
         for i in range(num_users * avg_friendships // 2):
             frenship = poss_frenship[i]
-            self.add_friendship(frenship[0], frenship[i])
+            self.add_friendship(frenship[0], frenship[1])
 
     def get_all_social_paths(self, user_id):
-        """Takes a user's user_id as an argument
-
-        Returns a dictionary containing every user in that user's
-        extended network with the shortest friendship path between them.
+        """Takes a user's user_id as an argument; returns a dictionary
+        containing every user in that user's extended network with the
+        shortest friendship path between them.
 
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
-
+        # Breadth first traversal + add `user: path` pairs to visited
+        qq = Queue()  # Create queue and add starting user_id
+        qq.enqueue([user_id])
+        while qq.size() > 0:  # As long as queue has length
+            path = qq.dequeue()  # Current path to vertex
+            user = path[-1]  # Make new variable for readability
+            if user not in visited:  # Check if user's been visited
+                visited[user] = path  # If not, add them! user_id: path
+                # Put all users connected to that user in queue
+                for fren in self.friendships[user]:
+                    qq.enqueue(path + [fren])
         return visited
 
 
+# %%
 if __name__ == "__main__":
     sg = SocialGraph()
     sg.populate_graph(10, 2)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
+
+
+# %%
