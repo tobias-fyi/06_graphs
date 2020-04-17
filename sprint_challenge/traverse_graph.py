@@ -46,10 +46,13 @@ class TraverseGraph:
     def choose_unexplored_direction(self, room: Room) -> str:
         """Picks a random unexplored adjacent room (direction to it).
         Returns None if room has no unexplored adjacents."""
+        unexplored = []
         if room.id in self.rooms and "?" in self.rooms[room.id].values():
             for exit_dir, room in self.rooms[room.id].items():
                 if room == "?":
-                    return exit_dir
+                    unexplored.append(exit_dir)
+
+            return random.choice(unexplored)
         else:
             return None
 
@@ -70,5 +73,4 @@ class TraverseGraph:
 
     def bft(self, start_room: Room) -> list:
         """Return list of moves that traverses entire graph."""
-        # TODO: Implement me!
         pass

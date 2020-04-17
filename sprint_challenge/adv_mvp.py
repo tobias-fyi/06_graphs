@@ -81,7 +81,7 @@ def traverse_room_graph(player: Player) -> list:
         # TODO: if no unexplored adjacent rooms, but has more than one option
         # Choose random direction
 
-    # TODO: Now that graph is populated, use it to find shorter path
+    # TODO: Now that graph is populated, breadth-first traversal
 
     return traversal_path
 
