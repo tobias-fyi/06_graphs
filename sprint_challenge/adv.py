@@ -2,28 +2,35 @@
 Graphs — Sprint Challenge :: Adventure!
 """
 
+# %%
 from ast import literal_eval
 from collections import deque  # To test out different queue
+import os
 import random
 
-from room import Room
+from traverse_graph import TraverseGraph
 from player import Player
-from util import Queue
+from room import Room
+from util import Queue, Stack
 from world import World
 
 # === Load world === #
 world = World()
 
-
+# %%
 # You may uncomment the smaller graphs for development and testing purposes.
-# map_file = "maps/test_line.txt"
-# map_file = "maps/test_cross.txt"
-map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+file_path = "06_graphs/sprint_challenge/"
+# map_path = "maps/test_line.txt"
+# map_path = "maps/test_cross.txt"
+# map_path = "maps/test_loop.txt"
+# map_path = "maps/test_loop_fork.txt"
+map_path = "maps/main_maze.txt"
+
+# Path constructor for debugger (Uncomment when using vscode debugger)
+# map_path = os.path.join(file_path, map_path)
 
 # === Loads the map into a dictionary === #
-room_graph = literal_eval(open(map_file, "r").read())
+room_graph = literal_eval(open(map_path, "r").read())
 world.load_graph(room_graph)
 
 # === Print an ASCII map === #
@@ -36,6 +43,65 @@ player = Player(world.starting_room)
 traversal_path = []
 
 
+# %%
+def traverse_room_graph(player: Player) -> list:
+    # ====== Populate the Traversal Graph ====== #
+    # Instantiate traversal graph and other such things
+    tg = TraverseGraph()
+    stack = Stack()
+
+    traversal_path = []  # List to be returned
+
+    # Starting room
+    player.current_room = world.starting_room
+
+    # Add current_room to graph
+    tg.add_room(player.current_room)
+
+    while len(tg.rooms) < len(room_graph):
+        # Keep track of if player moves this iteration
+        travel = False
+        # If room has unexplored, go to unexplored
+        # Choose the first available unexplored neighbor
+        for exit_dir, room in tg.rooms[player.current_room.id].items():
+            if room == "?":
+                # Get next Room object
+                next_room = getattr(player.current_room, f"{exit_dir}_to")
+
+                # Add room to graph
+                tg.add_next_room_to_graph(player.current_room, next_room, exit_dir)
+
+                # Push direction onto stack and set previous
+                stack.push(exit_dir)
+                traversal_path.append(exit_dir)
+
+                # Move in that exit_dir
+                player.travel(exit_dir)
+                # Indicate that travel happened
+                travel = True
+                # Go back to step #2 and repeat the process
+                break  # AKA: break out of inner for loop
+
+        if not travel:  # No travel this iteration
+            # Backtrack to last unexplored room
+            # Start going back up the stack in the opposite direction
+            exit_dir = tg.opposites[stack.pop()]
+            traversal_path.append(exit_dir)  # Append the opposite direction as well
+            player.travel(exit_dir)
+
+        # TODO: if no unexplored adjacent rooms, but has more than one option
+        # Choose random direction
+
+    return traversal_path
+
+
+traversal_path = traverse_room_graph(player)
+# TODO: Run BFT on cross maze
+# TODO: Run BFT on loop maze
+# TODO: Run BFT on loop+fork maze
+# TODO: Run BFT on main maze
+
+# %%
 # === Traversal Test === #
 visited_rooms = set()
 player.current_room = world.starting_room
@@ -57,12 +123,12 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")
